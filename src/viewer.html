@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Barn Viewer</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      html,
+      body {
+        background-color: #101010;
+        height: 100%;
+        width: 100%;
+        font-family: "Roboto Mono", monospace;
+        font-weight: 500;
+      }
+
+      html,
+      body,
+      pre,
+      p {
+        padding: 0;
+        margin: 0;
+      }
+
+      p,
+      pre,
+      div.content {
+        height: fit-content;
+        width: fit-content;
+      }
+
+      div.content {
+        padding-top: 20px;
+        padding-left: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      pre {
+        font-size: 20px;
+      }
+
+      p {
+        font-size: 40px;
+      }
+
+      pre.stdout {
+        color: white;
+      }
+
+      pre.stderr {
+        color: red;
+      }
+
+      p.warning {
+        color: rgb(218, 200, 137);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="content">

@@ -1,0 +1,24 @@
+[options]
+root = "./scripts"
+
+[[user]]
+username = "udit"
+password = "uditspass"
+groups = ["bot-group"]
+
+[[user]]
+username = "udit2"
+password = "uditspass2"
+groups = ["asd"]
+
+[[group]]
+name = "bot-group"
+regex = "test.*"
+
+[[group]]
+name = "asd"
+regex = "test.*"
+
+[[group]]
+name = "passwordless"
+regex = "passwordless-.*"

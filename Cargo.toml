@@ -1,0 +1,27 @@
+[package]
+name = "barn"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.3.1"
+actix-web-httpauth = "0.8.0"
+anyhow = "1.0.70"
+async-stream = "0.3.5"
+bytes = "1.4.0"
+colored = "2.0.0"
+futures = "0.3.28"
+lazy_static = "1.4.0"
+regex = "1.7.3"
+serde = { version = "1.0.160", features = ["derive"] }
+tokio = { version = "1.27.0", features = ["process"] }
+tokio-stream = "0.1.12"
+tokio-util = { version = "0.7.7", features = ["io"] }
+toml = "0.7.3"
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = "fat"
+panic = "abort"
+strip = true
