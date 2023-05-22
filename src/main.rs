@@ -6,6 +6,7 @@ use actix_web::http::StatusCode;
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use actix_web_httpauth::middleware::HttpAuthentication;
 use bytes::Bytes;
+use clap::Parser;
 use colored::Colorize;
 use config::{log_config_information, read_config, Config};
 use constants::{VIEWER_ENDING_BYTES, VIEWER_TEMPLATE_BYTES};
@@ -63,9 +64,19 @@ async fn default_handler(path: web::Path<String>) -> impl Responder {
         .body(path.to_string())
 }
 
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Name of config file
+    #[arg(short, long)]
+    config: Option<String>,
+}
+
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {
-    let config = read_config()?;
+    let args = Args::parse();
+
+    let (config, config_path) = read_config(args.config)?;
     let options = &config.options;
 
     check_executables_root(&options.root)?;
@@ -75,8 +86,9 @@ async fn main() -> anyhow::Result<()> {
         config: config.clone(),
     });
 
+    println!("\n{} {}", "Config path:".blue().bold(), config_path);
     println!(
-        "\n{} {}{}{}",
+        "{} {}{}{}",
         "Running on:".blue().bold(),
         options.host,
         ":".bold(),

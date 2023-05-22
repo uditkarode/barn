@@ -2,6 +2,7 @@ use anyhow::Context;
 use colored::{ColoredString, Colorize};
 use regex::Regex;
 use serde::{de, Deserialize, Deserializer};
+use std::fs;
 use std::{
     fs::{read_dir, DirEntry},
     path::{Path, PathBuf},
@@ -91,17 +92,38 @@ fn default_port() -> u16 {
     8080
 }
 
-// util functions
-pub fn read_config() -> anyhow::Result<Config> {
-    let toml_str = std::fs::read_to_string("config.toml").unwrap_or_else(|_| {
-        println!(
-            "{} config.toml not found in current directory, using defaults",
-            "[warn]".yellow().bold()
-        );
-        return String::new();
-    });
+pub fn read_config(config_arg: Option<String>) -> anyhow::Result<(Config, String)> {
+    let get_toml = || -> anyhow::Result<(String, String)> {
+        if let Some(c) = config_arg {
+            return Ok((fs::read_to_string(&c)?, c));
+        }
 
-    toml::from_str::<Config>(&toml_str).with_context(|| "Invalid config")
+        let root_config = Path::new("./barn.toml");
+        if root_config.exists() {
+            return Ok((
+                fs::read_to_string(root_config)?,
+                root_config.display().to_string(),
+            ));
+        }
+
+        let home_config = dirs::config_dir()
+            .unwrap_or_default()
+            .join("barn")
+            .join("barn.toml");
+        if home_config.exists() {
+            return Ok((
+                fs::read_to_string(&home_config)?,
+                home_config.display().to_string(),
+            ));
+        }
+
+        Ok((String::new(), "using defaults".to_string()))
+    };
+
+    let (toml_str, config_location) = get_toml()?;
+    toml::from_str::<Config>(&toml_str)
+        .with_context(|| "Invalid config")
+        .map(|config| (config, config_location.to_string()))
 }
 
 pub fn log_config_information(config: &Config, root: &PathBuf) -> Result<(), anyhow::Error> {
